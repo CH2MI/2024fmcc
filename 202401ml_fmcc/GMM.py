@@ -29,9 +29,7 @@ def MFCC(path, gender):
     log_mel_spec = librosa.power_to_db(mel_spec, ref=np.max)
 
     mfcc = librosa.feature.mfcc(S=log_mel_spec, n_mfcc=20)
-
-    librosa.display.specshow(mfcc, sample_rate)
-
+    
     if gender == 'M':
         male.append(mfcc.T)
     else:
@@ -46,9 +44,7 @@ f = open('fmcc_train.ctl', 'r')
 
 for i in range (8000):
     path = Read_Path(f)
-    if i != 0: break
     gender = path[0]
-    print(gender)
     path = 'raw16k/train/' + path + '.raw'
     MFCC(path, gender)
 
@@ -57,7 +53,7 @@ male = np.vstack(male)
 female = np.vstack(female)
 
 # GMM 모델 생성 및 학습
-n_components = 16  # GMM의 컴포넌트 수
+n_components = 1  # GMM의 컴포넌트 수
 gmm_male = GaussianMixture(n_components=n_components, covariance_type='diag', max_iter=200, random_state=42)
 gmm_female = GaussianMixture(n_components=n_components, covariance_type='diag', max_iter=200, random_state=42)
 
