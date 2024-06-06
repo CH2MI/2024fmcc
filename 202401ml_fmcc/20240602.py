@@ -4,10 +4,8 @@ import librosa
 import numpy as np
 from sklearn.mixture import GaussianMixture
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.feature_selection import SelectKBest, f_classif
-import joblib
 
 sample_rate = 16000
 dtype = np.int16
@@ -53,11 +51,11 @@ def select_features(X, y, k=50):
     X_new = selector.fit_transform(X, y)
     return X_new
 
-with open('fmcc_train.ctl', 'r') as f:
+with open('202401ml_fmcc/fmcc_train.ctl', 'r') as f:
     for i in range (8000):
         path = Read_Path(f)
         gender = path[0]
-        path = 'raw16k/train/' + path + '.wav'
+        path = '202401ml_fmcc/raw16k/train/' + path + '.wav'
         temp = MFCC(path).T
         if gender == 'F':
             female.append(temp)

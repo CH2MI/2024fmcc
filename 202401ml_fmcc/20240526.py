@@ -31,10 +31,10 @@ def MFCC(path):
     return mfcc
     
 
-f = open('fmcc_train.ctl', 'r')
+f = open('202401ml_fmcc/fmcc_train.ctl', 'r')
 for i in range (8000):
     path = Read_Path(f)
-    path = 'raw16k/train/' + path + '.raw'
+    path = '202401ml_fmcc/raw16k/train/' + path + '.raw'
     temp = MFCC(path).T
     feature.append(temp)
 

@@ -25,17 +25,17 @@ def Read_Path(f):
     return f.readline().strip()
 
 
-f = open('fmcc_train.ctl', 'r')
+f = open('machine_learning/202401ml_fmcc/fmcc_train.ctl', 'r')
 
-path = Read_Path(f)
-path = 'raw16k/train/' + path
-path = raw2wav(path)
+# path = Read_Path(f)
+# path = 'machine_learning/202401ml_fmcc/raw16k/train/' + path
+# path = raw2wav(path)
 
-# for i in range (8000):
-#     path = Read_Path(f)
-#     gender = path[0]
-#     path = 'raw16k/train/' + path
-#     raw2wav(path)
+for i in range (8000):
+    path = Read_Path(f)
+    gender = path[0]
+    path = 'machine_learning/202401ml_fmcc/raw16k/train/' + path
+    path = raw2wav(path)
 print(path)
 y, sr = librosa.load(path)
 ft = librosa.stft(y)
