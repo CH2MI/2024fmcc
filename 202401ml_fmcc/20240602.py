@@ -7,6 +7,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.feature_selection import SelectKBest, f_classif
+import noisereduce as nr
 import joblib
 
 sample_rate = 16000
@@ -23,28 +24,8 @@ def MFCC(path):
      # 음성 신호 불러오기
     sr=16000
     audio, sr = librosa.load(path, sr=sr)
-    n_fft = 8192  # 원하는 FFT 윈도우 크기
-    hop_length=4096
-    n_mfcc=75
-    fmin=0
-    fmax=8000
-    top_db=90
-
-    # 스케일 조정
-    max_amp = np.max(np.abs(audio))
-    scale_factor = 1.0 / max_amp
-    scaled_audio = audio * scale_factor
-     
-    # 스펙트로그램 평활화
-    norm_audio = librosa.util.normalize(scaled_audio)
-    
-    # RMS 정규화
-    rms = librosa.feature.rms(y=norm_audio)
-    normalized_audio = norm_audio / (np.max(rms) + 1e-8)
-  
-    # MFCC 추출
-    mfcc = librosa.feature.mfcc(y=normalized_audio, sr=sr, n_mfcc=n_mfcc, hop_length=hop_length, n_fft=n_fft, fmin=fmin, fmax=fmax)
-    
+    y = librosa.effects.preemphasis(audio, coef=0.97)
+    mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=75, hop_length=4096, n_fft=8192, fmin=0, fmax=8000)
     return mfcc
 
 # 특성 선택 함수
