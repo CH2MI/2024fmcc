@@ -12,37 +12,20 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 sample_rate = 16000
-window_size = 8192
-hop_length = 2048
+window_size = 10000
+hop_length = 2500
 mfcc_length = 0
 energy_length = 0
 n_mfcc = 66
-# Spectral Subtraction을 사용한 노이즈 제거 함수
-def spectral_subtraction(audio, noise_threshold=1.0):
-    stft_audio = librosa.stft(audio, n_fft=400, hop_length=160)  # Short-time Fourier Transform (STFT) 계산
-    magnitude_audio = np.abs(stft_audio)  # 스펙트럼의 크기 계산
-    phase_audio = np.angle(stft_audio)  # 스펙트럼의 위상 계산
-
-    # 노이즈 스펙트럼 추정
-    noise = np.mean(magnitude_audio[:, :int(magnitude_audio.shape[1] * 0.1)], axis=1)  # 처음 10% 프레임을 노이즈로 가정
-    noise_mag = np.repeat(np.expand_dims(noise, axis=1), magnitude_audio.shape[1], axis=1)
-
-    # 노이즈 제거
-    magnitude_clean = np.maximum(magnitude_audio - noise_mag, noise_threshold)
-
-    # ISTFT 계산
-    stft_clean = magnitude_clean * np.exp(1.0j * phase_audio)
-    audio_clean = librosa.istft(stft_clean)
-    return audio_clean
 
 def MFCC(path):
      # 음성 신호 불러오기
     audio, sr = librosa.load(path, sr=sample_rate)
     y = librosa.effects.preemphasis(audio, coef=0.97)
-    # y_clean = spectral_subtraction(y)
-    
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc, n_fft=window_size, hop_length=hop_length, fmin=0, fmax=800)   
-    return StandardScaler().fit_transform(mfcc)
+    spectral_contrast = librosa.feature.spectral_contrast(y=y, sr=sr, n_bands=6, n_fft=window_size, hop_length=hop_length)
+    feature = np.concatenate([mfcc, spectral_contrast], axis=0)
+    return StandardScaler().fit_transform(feature)
 
 def wav2mfcc(type, cnt, mfcc_length):
     mfccs = []
