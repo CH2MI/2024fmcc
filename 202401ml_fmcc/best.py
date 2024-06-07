@@ -2,21 +2,14 @@ import matplotlib.pyplot as plt
 import librosa
 import numpy as np
 from sklearn.mixture import GaussianMixture
-from sklearn.mixture import BayesianGaussianMixture
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
-import noisereduce as nr
-import joblib
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-
 sample_rate = 16000
 window_size = 10000
-hop_length = 2500
-mfcc_length = 0
-energy_length = 0
-n_mfcc = 66
+hop_length = 2000
+mfcc_length = 0 
+n_mfcc = 76 
 
 def MFCC(path):
      # 음성 신호 불러오기
@@ -24,13 +17,16 @@ def MFCC(path):
     y = librosa.effects.preemphasis(audio, coef=0.97)
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc, n_fft=window_size, hop_length=hop_length, fmin=0, fmax=800)   
     spectral_contrast = librosa.feature.spectral_contrast(y=y, sr=sr, n_bands=6, n_fft=window_size, hop_length=hop_length)
-    feature = np.concatenate([mfcc, spectral_contrast], axis=0)
+    rmse = librosa.feature.rms(y=y, frame_length=window_size, hop_length=hop_length)
+    feature = np.concatenate([rmse, mfcc, spectral_contrast], axis=0)
     return StandardScaler().fit_transform(feature)
-
+ 
 def wav2mfcc(type, cnt, mfcc_length):
     mfccs = []
     with open('fmcc_' + type + '.ctl', 'r') as f:
         for i in range (cnt):
+            if i % (cnt / 10) == 0:
+                print(f'{(i / cnt * 100):.2f}%...')
             path = f.readline().strip()
             path = 'raw16k/' + type + '/' + path + '.wav'
             mfcc = MFCC(path).T
@@ -56,8 +52,8 @@ lda = LinearDiscriminantAnalysis(n_components=1)
 lda_featrue = lda.fit_transform(mfccs, labels) 
 print("LDA 완료")
 
-gmm_feml = GaussianMixture(n_components=3, covariance_type='full', max_iter=300, random_state=0)
-gmm_male = GaussianMixture(n_components=3, covariance_type='full', max_iter=300, random_state=0)
+gmm_feml = GaussianMixture(n_components=3, covariance_type='full', max_iter=200, random_state=0)
+gmm_male = GaussianMixture(n_components=3, covariance_type='full', max_iter=200, random_state=0)
 
 feml_feature = lda_featrue[0:4000]
 male_feature = lda_featrue[4000:8000]
@@ -79,7 +75,7 @@ for i in lda_featrue:
     else:
         test_ret.append(0)
 
-with open('fmcc_train_result_20240606.txt', 'w') as f:
+with open('fmcc_train_result_20240607.txt', 'w') as f:
     for i in test_ret:
         f.write(f'{i}\n')
 
@@ -107,7 +103,7 @@ for i in lda_featrue:
     else:
         test_ret.append(0)
 
-with open('fmcc_test_result_20240606.txt', 'w') as f:
+with open('fmcc_test_result_20240607.txt', 'w') as f:
     for i in test_ret:
         f.write(f'{i}\n')
 
