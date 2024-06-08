@@ -25,11 +25,11 @@ def MFCC(path):
     mfcc = librosa.feature.mfcc(y=audio, sr=sample_rate, n_mfcc=20)
     return mfcc
 
-f = open('fmcc_train.ctl', 'r')
+f = open('202401ml_fmcc/fmcc_test.ctl', 'r')
 for i in range (8000):
     path = Read_Path(f)
     gender = path[0]
-    path = 'raw16k/train/' + path + '.raw'
+    path = '202401ml_fmcc/raw16k/test/' + path + '.wav'
     temp = MFCC(path).T
     if gender == 'F':
         female.append(temp)

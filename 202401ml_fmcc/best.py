@@ -23,12 +23,12 @@ def MFCC(path):
  
 def wav2mfcc(type, cnt, mfcc_length):
     mfccs = []
-    with open('fmcc_' + type + '.ctl', 'r') as f:
+    with open('202401ml_fmcc/fmcc_' + type + '.ctl', 'r') as f: # 경로수정
         for i in range (cnt):
             if i % (cnt / 10) == 0:
                 print(f'{(i / cnt * 100):.2f}%...')
             path = f.readline().strip()
-            path = 'raw16k/' + type + '/' + path + '.wav'
+            path = '202401ml_fmcc/raw16k/' + type + '/' + path + '.wav' # 경로수정
             mfcc = MFCC(path).T
             mfccs.append(mfcc)
             if len(mfcc) > mfcc_length:
@@ -103,7 +103,7 @@ for i in lda_featrue:
     else:
         test_ret.append(0)
 
-with open('fmcc_test_result_20240607.txt', 'w') as f:
+with open('202401ml_fmcc/raw16k/fmcc_test_result_20240607.txt', 'w') as f:
     for i in test_ret:
         f.write(f'{i}\n')
 

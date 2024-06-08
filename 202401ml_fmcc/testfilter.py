@@ -25,7 +25,7 @@ def Read_Path(f):
     return f.readline().strip()
 
 
-f = open('fmcc_test.ctl', 'r')
+f = open('202401ml_fmcc/fmcc_test.ctl', 'r')
 
 # path = Read_Path(f)
 # path = 'raw16k/test/' + path
@@ -34,7 +34,7 @@ f = open('fmcc_test.ctl', 'r')
 for i in range (1000):
     path = Read_Path(f)
     gender = path[0]
-    path = 'raw16k/test/' + path
+    path = '202401ml_fmcc/raw16k/test/' + path
     raw2wav(path)
 # print(path)
 # y, sr = librosa.load(path)
