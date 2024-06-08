@@ -86,5 +86,3 @@ for i in lda_feature:
 labels = np.concatenate((np.zeros(4000), np.ones(4000)), axis=0)
 accuracy = accuracy_score(labels, test_ret)
 print(f'Accuracy with window_size={window_size}, hop_length={hop_length}, n_mfcc={n_mfcc}: {accuracy * 100:.2f}%')
-
-print(f'Best parameters: window_size={best_params[0]}, hop_length={best_params[1]}, n_mfcc={best_params[2]} with accuracy: {best_accuracy * 100:.2f}%')
