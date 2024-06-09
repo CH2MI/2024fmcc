@@ -23,12 +23,12 @@ def MFCC(path):
  
 def wav2mfcc(type, cnt, mfcc_length):
     mfccs = []
-    with open('202401ml_fmcc/fmcc_' + type + '.ctl', 'r') as f: # 경로수정
+    with open('fmcc_' + type + '.ctl', 'r') as f:
         for i in range (cnt):
             if i % (cnt / 10) == 0:
                 print(f'{(i / cnt * 100):.2f}%...')
             path = f.readline().strip()
-            path = '202401ml_fmcc/raw16k/' + type + '/' + path + '.wav' # 경로수정
+            path = 'raw16k/' + type + '/' + path + '.wav'
             mfcc = MFCC(path).T
             mfccs.append(mfcc)
             if len(mfcc) > mfcc_length:
@@ -40,7 +40,7 @@ def pad_features(mfccs, mfcc_length):
     flatted_mfccs = np.reshape(padded_mfccs, (padded_mfccs.shape[0], -1))
     return flatted_mfccs
 
-mfccs, mfcc_length = wav2mfcc('train', 8000, mfcc_length)
+mfccs, mfcc_length = wav2mfcc('202401ml_fmcc/raw16k/train', 8000, mfcc_length)
 print('mfcc 추출 완료')
 
 mfccs = pad_features(mfccs, mfcc_length)
@@ -103,7 +103,7 @@ for i in lda_featrue:
     else:
         test_ret.append(0)
 
-with open('202401ml_fmcc/raw16k/fmcc_test_result_20240607.txt', 'w') as f:
+with open('fmcc_test_result_20240607.txt', 'w') as f:
     for i in test_ret:
         f.write(f'{i}\n')
 
